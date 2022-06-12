@@ -1,5 +1,6 @@
 const API_URL_RANDOM = 'https://api.thecatapi.com/v1/images/search?limit=3&api_key=2b4ff403-2b9c-451a-94c7-8f54171b627e';
 const API_URL_FAVORITES = 'https://api.thecatapi.com/v1/favourites?api_key=2b4ff403-2b9c-451a-94c7-8f54171b627e';
+const API_URL_FAVORITES_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=2b4ff403-2b9c-451a-94c7-8f54171b627e`;
 
 
 const spanError = document.getElementById('error')
@@ -46,15 +47,22 @@ async function loadFavoritesCats(){
         spanError.innerHTML = "Error: " + res.status;
 
     } else {
+       const section = document.getElementById('favoritesMichis');
+       section.innerHTML = "";
+       const h2 = document.createElement('h2');
+       const h2Text = document.createTextNode('Gatos favoritos');
+       h2.appendChild(h2Text);
+       section.appendChild(h2);
+
        data.forEach(gato => {
            console.log(gato.image.url);
-           const section = document.getElementById('favoritesMichis');
            const article = document.createElement('article');
            const img = document.createElement('img');
            const btn = document.createElement('button');
            const btnText = document.createTextNode('Sacar gato de favoritos');
 
            btn.appendChild(btnText);
+           btn.onclick = () => deleteFavoriteCats(gato.id);
            img.src = gato.image.url;
            article.appendChild(img);
            article.appendChild(btn);
@@ -84,7 +92,31 @@ async function saveFavoriteCats(id){
         
         spanError.innerHTML = "Error: " + res.status;
 
-    } 
+    } else {
+        console.log('Gato guardado');
+        loadFavoritesCats();
+    }
+
+}
+
+async function deleteFavoriteCats(id){
+    const res = await fetch(API_URL_FAVORITES_DELETE(id),{
+        method: 'DELETE',
+    });
+
+    const data = await res.json();
+
+    console.log('Delete');
+    console.log(res);
+
+    if (res.status != 200) {
+        
+        spanError.innerHTML = "Error: " + res.status;
+
+    } else {
+        console.log('Gato borrado');
+        loadFavoritesCats();
+    }
 
 }
 
