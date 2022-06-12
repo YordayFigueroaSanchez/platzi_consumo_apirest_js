@@ -1,6 +1,6 @@
-const API_URL_RANDOM = 'https://api.thecatapi.com/v1/images/search?limit=3&api_key=2b4ff403-2b9c-451a-94c7-8f54171b627e';
-const API_URL_FAVORITES = 'https://api.thecatapi.com/v1/favourites?api_key=2b4ff403-2b9c-451a-94c7-8f54171b627e';
-const API_URL_FAVORITES_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}?api_key=2b4ff403-2b9c-451a-94c7-8f54171b627e`;
+const API_URL_RANDOM = 'https://api.thecatapi.com/v1/images/search?limit=3';
+const API_URL_FAVORITES = 'https://api.thecatapi.com/v1/favourites';
+const API_URL_FAVORITES_DELETE = (id) => `https://api.thecatapi.com/v1/favourites/${id}`;
 
 
 const spanError = document.getElementById('error')
@@ -37,7 +37,12 @@ async function loadRandomCats(){
 }
 
 async function loadFavoritesCats(){
-    const res = await fetch(API_URL_FAVORITES);
+    const res = await fetch(API_URL_FAVORITES,{
+        method: 'GET',
+        headers: {
+            'X-API-KEY':'2b4ff403-2b9c-451a-94c7-8f54171b627e',
+        },
+    });
     const data = await res.json();
     console.log('Favorites');
     console.log(data);
@@ -64,6 +69,7 @@ async function loadFavoritesCats(){
            btn.appendChild(btnText);
            btn.onclick = () => deleteFavoriteCats(gato.id);
            img.src = gato.image.url;
+           img.width = 200;
            article.appendChild(img);
            article.appendChild(btn);
            section.appendChild(article);
@@ -77,6 +83,7 @@ async function saveFavoriteCats(id){
         method: 'POST',
         headers: {
             'Content-Type':'application/json',
+            'X-API-KEY':'2b4ff403-2b9c-451a-94c7-8f54171b627e',
         },
         body: JSON.stringify({
             image_id: id
@@ -102,6 +109,9 @@ async function saveFavoriteCats(id){
 async function deleteFavoriteCats(id){
     const res = await fetch(API_URL_FAVORITES_DELETE(id),{
         method: 'DELETE',
+        headers: {
+            'X-API-KEY':'2b4ff403-2b9c-451a-94c7-8f54171b627e',
+        },
     });
 
     const data = await res.json();
